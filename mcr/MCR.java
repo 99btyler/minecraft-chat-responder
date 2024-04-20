@@ -22,7 +22,7 @@ public class MCR {
 
     private final String name = "minecraft-chat-responder";
     private int keybind = 24; // o
-    private boolean enabled = false;
+    private boolean enabled = true;
     
     private final List<Keyword> keywords = new ArrayList<Keyword>();
     private final String saveFile = "keywordsdata.txt";
@@ -170,15 +170,24 @@ public class MCR {
     		// looking for playerName?
     		if (keywordText.contains("player.name")) {
     			
-    			keywordText = keyword.getText().replace("player.name", Minecraft.getMinecraft().thePlayer.getName());
+    			final String playerName = Minecraft.getMinecraft().thePlayer.getName();
+    			keywordText = keyword.getText().replace("player.name", playerName);
     			
     			// message contains playerName?
-    			final int indexOfPlayerName1 = message.indexOf(Minecraft.getMinecraft().thePlayer.getName());
-    			if (indexOfPlayerName1 != -1) {
-    				final int indexOfPlayerName2 = message.indexOf(Minecraft.getMinecraft().thePlayer.getName(), indexOfPlayerName1 + 1);
-    				if (indexOfPlayerName2 == -1) {
-    					return; // was looking for playerName and didn't find it
+    			final int indexOfPlayerName = message.indexOf(playerName);
+    			if (indexOfPlayerName != -1) {
+    				
+    				final char charAfterPlayerName = message.charAt(indexOfPlayerName + playerName.length());
+    				
+    				if (charAfterPlayerName == '>' || charAfterPlayerName == ':') {
+    					
+    					final int indexOfPlayerName2 = message.indexOf(playerName, indexOfPlayerName+1);
+    					if (indexOfPlayerName2 == -1) {
+    						continue; // was looking for playerName and didn't find it
+    					}
+    					
     				}
+    				
     			}
     			
     		}
@@ -202,6 +211,64 @@ public class MCR {
 						
 					}
 				}, delay, TimeUnit.MILLISECONDS);
+    			
+    		}
+    		
+    	}
+    	
+    	bedwarsFriendRequester(message);
+    	
+    }
+    
+    public final void bedwarsFriendRequester(String message) {
+    	
+    	if (message.contains("Red -") || message.contains("Blue -") || message.contains("Green -") || message.contains("Yellow -")) {
+    		
+    		// Get names
+    		final String[] split = message.split(",");
+    		final List<String> names = new ArrayList<String>();
+    		
+    		for (int i = 0; i < split.length; i++) {
+    			
+    			String name = split[i];
+    			
+    			if (i == 0) {
+    				name = split[i].split("-")[1]; // removes leading chars
+    			}
+    			
+    			if (name.contains("]")) {
+					name = name.split("]")[1]; // removes ranks
+				}
+    			
+    			name = name.replaceAll("\\s", ""); // removes whitespace
+    			
+    			if (name.equals(Minecraft.getMinecraft().thePlayer.getName())) {
+					continue;
+				}
+    			
+    			names.add(name);
+    			
+    		}
+    		
+    		// Send requests
+    		for (int i = 0; i < names.size(); i++) {
+    			
+    			final String name = names.get(i);
+    			
+    			final ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+        		scheduledExecutorService.schedule(new Runnable() {
+					@Override
+					public void run() {
+						
+						if (!enabled) {
+							return;
+						}
+						
+						Minecraft.getMinecraft().thePlayer.sendChatMessage("/f add " + name);
+						Minecraft.getMinecraft().thePlayer.playSound("note.bass", 1.0f, 1.0f);
+						
+					}
+				}, 17000 + (new Random().nextInt(2000-1500+1)+1500 * i), TimeUnit.MILLISECONDS);
     			
     		}
     		

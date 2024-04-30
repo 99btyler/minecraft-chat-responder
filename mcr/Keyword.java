@@ -2,8 +2,6 @@ package mcr;
 
 import java.util.Random;
 
-import net.minecraft.client.gui.GuiButton;
-
 public class Keyword {
 	
 	private String text;

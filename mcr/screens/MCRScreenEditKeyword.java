@@ -1,8 +1,6 @@
 package mcr.screens;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import mcr.Keyword;
 import mcr.MCR;

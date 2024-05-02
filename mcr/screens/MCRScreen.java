@@ -1,12 +1,8 @@
 package mcr.screens;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
-import mcr.Keyword;
 import mcr.MCR;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 

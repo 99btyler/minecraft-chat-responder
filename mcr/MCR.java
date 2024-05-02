@@ -19,8 +19,7 @@ import net.minecraft.client.Minecraft;
 public class MCR {
 	
 	private static final MCR instance = new MCR();
-
-    private final String name = "minecraft-chat-responder";
+	
     private int keybind = 24; // o
     private boolean enabled = true;
     
@@ -33,10 +32,6 @@ public class MCR {
     
     public static final MCR getInstance() {
         return instance;
-    }
-    
-    public final String getName() {
-    	return name;
     }
     
     public final int getKeybind() {

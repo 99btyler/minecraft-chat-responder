@@ -16,7 +16,7 @@ Get this project set up locally
 // ----> inside Minecraft.java
 
 // In the runTick() method after 'if (Keyboard.getEventKeyState())' after 'if (this.currentScreen != null) { } else {':
-if (k == MCR.getInstance().getKeybind()) {
+if (Keyboard.getKeyName(k).equals(MCR.getInstance().getKeybind())) {
   MCR.getInstance().openGUI();
 }
 ```

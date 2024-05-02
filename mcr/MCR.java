@@ -20,7 +20,7 @@ public class MCR {
 	
 	private static final MCR instance = new MCR();
 	
-    private int keybind = 24; // o
+    private String keybind = "O";
     private boolean enabled = true;
     
     private final List<Keyword> keywords = new ArrayList<Keyword>();
@@ -34,7 +34,7 @@ public class MCR {
         return instance;
     }
     
-    public final int getKeybind() {
+    public final String getKeybind() {
     	return keybind;
     }
     
@@ -42,7 +42,7 @@ public class MCR {
     	return enabled;
     }
     
-    public final void toogle() {
+    public final void togle() {
     	enabled = !enabled;
     }
     

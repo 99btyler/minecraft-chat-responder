@@ -49,7 +49,7 @@ public class MCRScreen extends GuiScreen {
 		switch (button.id) {
 		
 			case 0:
-				MCR.getInstance().toogle();
+				MCR.getInstance().togle();
 				mc.displayGuiScreen(new MCRScreen()); // update screen
 				break;
 				

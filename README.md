@@ -1,5 +1,5 @@
 # minecraft-chat-responder
-Automatically respond to chat messages. Plus, a Hypixel Bedwars friend requester
+Automatically respond to keywords in the chat
 
 # Getting Started
 Get this project set up locally

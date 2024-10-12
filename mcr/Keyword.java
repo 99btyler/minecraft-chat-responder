@@ -38,18 +38,7 @@ public class Keyword {
 	}
 	
 	public final void setResponses(String responses) {
-		
-		String validResponses = "";
-		final String[] responsesSplit = responses.split(";");
-		for (String response : responsesSplit) {
-			if (text.contains(response)) {
-				continue;
-			}
-			validResponses += (response + ";");
-		}
-		
-		this.responses = validResponses;
-		
+		this.responses = responses;
 	}
 	
 	public final String getDelay() {

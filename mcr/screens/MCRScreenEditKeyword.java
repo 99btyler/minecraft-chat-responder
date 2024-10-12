@@ -149,6 +149,22 @@ public class MCRScreenEditKeyword extends GuiScreen {
 		guiTextFieldResponses.textboxKeyTyped(typedChar, keyCode);
 		guiTextFieldDelay.textboxKeyTyped(typedChar, keyCode);
 		
+		// Handle tabbing
+		if (keyCode == 15) {
+			if (guiTextFieldText.isFocused()) {
+				guiTextFieldText.setFocused(false);
+				guiTextFieldResponses.setFocused(true);
+			} else if (guiTextFieldResponses.isFocused()) {
+				guiTextFieldResponses.setFocused(false);
+				guiTextFieldDelay.setFocused(true);
+			} else if (guiTextFieldDelay.isFocused()) {
+				guiTextFieldDelay.setFocused(false);
+				guiTextFieldText.setFocused(true);
+			} else {
+				guiTextFieldText.setFocused(true);
+			}
+		}
+		
 	}
 
 }

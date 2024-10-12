@@ -43,17 +43,14 @@ public class MCRScreenAddKeyword extends GuiScreen {
 		
 		guiTextFieldText = new GuiTextField(0, fontRendererObj, MCRstartingX + 1, guiTextFieldY, MCRwidth - 2, 20);
 		guiTextFieldText.setMaxStringLength(999);
-		guiTextFieldText.setText(colorCodeGray + "keyword");
 		guiTextFieldY += 20;
 		
 		guiTextFieldResponses = new GuiTextField(1, fontRendererObj, MCRstartingX + 1, guiTextFieldY, MCRwidth - 2, 20);
 		guiTextFieldResponses.setMaxStringLength(999);
-		guiTextFieldResponses.setText(colorCodeGray + "responses: separated by ;");
 		guiTextFieldY += 20;
 		
 		guiTextFieldDelay = new GuiTextField(2, fontRendererObj, MCRstartingX + 1, guiTextFieldY, MCRwidth - 2, 20);
 		guiTextFieldDelay.setMaxStringLength(999);
-		guiTextFieldDelay.setText(colorCodeGray + "delay: min-max");
 		
 	}
 	
@@ -69,6 +66,35 @@ public class MCRScreenAddKeyword extends GuiScreen {
 		guiTextFieldText.drawTextBox();
 		guiTextFieldResponses.drawTextBox();
 		guiTextFieldDelay.drawTextBox();
+		
+		// Handle gray hint text
+		if (guiTextFieldText.isFocused()) {
+			if (guiTextFieldText.getText().contains(colorCodeGray)) {
+				guiTextFieldText.setText("");
+			}
+		} else {
+			if (guiTextFieldText.getText().isEmpty()) {
+				guiTextFieldText.setText(colorCodeGray + "keyword");
+			}
+		}
+		if (guiTextFieldResponses.isFocused()) {
+			if (guiTextFieldResponses.getText().contains(colorCodeGray)) {
+				guiTextFieldResponses.setText("");
+			}
+		} else {
+			if (guiTextFieldResponses.getText().isEmpty()) {
+				guiTextFieldResponses.setText(colorCodeGray + "responses: separated by ;");
+			}
+		}
+		if (guiTextFieldDelay.isFocused()) {
+			if (guiTextFieldDelay.getText().contains(colorCodeGray)) {
+				guiTextFieldDelay.setText("");
+			}
+		} else {
+			if (guiTextFieldDelay.getText().isEmpty()) {
+				guiTextFieldDelay.setText(colorCodeGray + "delay: min-max");
+			}
+		}
 		
 	}
 	
@@ -146,15 +172,20 @@ public class MCRScreenAddKeyword extends GuiScreen {
 		guiTextFieldResponses.textboxKeyTyped(typedChar, keyCode);
 		guiTextFieldDelay.textboxKeyTyped(typedChar, keyCode);
 		
-		// Remove gray text
-		if (guiTextFieldText.isFocused() && guiTextFieldText.getText().contains(colorCodeGray)) {
-			guiTextFieldText.setText("" + typedChar);
-		}
-		if (guiTextFieldResponses.isFocused() && guiTextFieldResponses.getText().contains(colorCodeGray)) {
-			guiTextFieldResponses.setText("" + typedChar);
-		}
-		if (guiTextFieldDelay.isFocused() && guiTextFieldDelay.getText().contains("§7")) {
-			guiTextFieldDelay.setText("" + typedChar);
+		// Handle tabbing
+		if (keyCode == 15) {
+			if (guiTextFieldText.isFocused()) {
+				guiTextFieldText.setFocused(false);
+				guiTextFieldResponses.setFocused(true);
+			} else if (guiTextFieldResponses.isFocused()) {
+				guiTextFieldResponses.setFocused(false);
+				guiTextFieldDelay.setFocused(true);
+			} else if (guiTextFieldDelay.isFocused()) {
+				guiTextFieldDelay.setFocused(false);
+				guiTextFieldText.setFocused(true);
+			} else {
+				guiTextFieldText.setFocused(true);
+			}
 		}
 		
 	}

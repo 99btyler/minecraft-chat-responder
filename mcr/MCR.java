@@ -8,7 +8,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -21,10 +20,10 @@ public class MCR {
 	private static final MCR instance = new MCR();
 	
     private String keybind = "O";
-    private boolean enabled = true;
+    private boolean enabled;
     
     private final List<Keyword> keywords = new ArrayList<Keyword>();
-    private final String saveFile = "keywordsdata.txt";
+    private final String saveFile = "mcr-keywords-data.txt";
     
     public MCR() {
     	loadKeywords();
@@ -61,10 +60,9 @@ public class MCR {
     }
     
     public final void editKeyword(Keyword keyword, String text, String responses, String delay) {
-    	final Keyword keywordToEdit = keywords.get(keywords.indexOf(keyword));
-    	keywordToEdit.setText(text);
-    	keywordToEdit.setResponses(responses);
-    	keywordToEdit.setDelay(delay);
+    	keyword.setText(text);
+    	keyword.setResponses(responses);
+    	keyword.setDelay(delay);
     	saveKeywords();
     }
     
@@ -80,7 +78,7 @@ public class MCR {
 				
 				BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file));
 				bufferedWriter.write("test,successful,1000-1500\n");
-				bufferedWriter.write("player.name,hey;hi;hello,1000-1500\n");
+				bufferedWriter.write("hey " + Minecraft.getMinecraft().thePlayer.getName() + ",hey;hi;hello,1000-1500\n");
 				bufferedWriter.close();
 				
 			} catch (IOException e) {
@@ -160,40 +158,36 @@ public class MCR {
     	
     	for (Keyword keyword : keywords) {
     		
-    		String keywordText = keyword.getText();
-    		
-    		// looking for playerName?
-    		if (keywordText.contains("player.name")) {
-    			
-    			final String playerName = Minecraft.getMinecraft().thePlayer.getName();
-    			keywordText = keyword.getText().replace("player.name", playerName);
-    			
-    			// message contains playerName?
-    			final int indexOfPlayerName = message.indexOf(playerName);
-    			if (indexOfPlayerName != -1) {
-    				
-    				final char charAfterPlayerName = message.charAt(indexOfPlayerName + playerName.length());
-    				
-    				if (charAfterPlayerName == '>' || charAfterPlayerName == ':') {
-    					
-    					final int indexOfPlayerName2 = message.indexOf(playerName, indexOfPlayerName+1);
-    					if (indexOfPlayerName2 == -1) {
-    						continue; // was looking for playerName and didn't find it
+    		boolean usernameInKeyword = false;
+    		String username = null;
+    		for (String word : keyword.getText().split(" ")) {
+    			if (Minecraft.getMinecraft().theWorld.getPlayerEntityByName(word) != null) {
+    				usernameInKeyword = true;
+    				username = word;
+    			}
+    		}
+    		if (usernameInKeyword) {
+    			if (message.contains(username)) {
+    				final char charAfterUsername = message.charAt(message.indexOf(username) + username.length());
+    				System.out.println(charAfterUsername);
+    				if (charAfterUsername == '>' || charAfterUsername == ':') {
+    					final String intro = (username + charAfterUsername + " ");
+    					final String content = message.split(intro)[1];
+    					if (!content.toLowerCase().contains(username.toLowerCase())) {
+    						continue;
     					}
-    					
     				}
     				
     			}
-    			
     		}
     		
-    		if (message.toLowerCase().contains(keywordText.toLowerCase())) {
+    		// Check for keyword
+    		if (message.toLowerCase().contains(keyword.getText().toLowerCase())) {
     			
+    			// Send response after a delay
     			final String response = keyword.getRandomResponse();
-    			final int delay = keyword.getRandomDelay();
-    			
     			final ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-        		scheduledExecutorService.schedule(new Runnable() {
+    			scheduledExecutorService.schedule(new Runnable() {
 					@Override
 					public void run() {
 						
@@ -205,65 +199,7 @@ public class MCR {
 						Minecraft.getMinecraft().thePlayer.playSound("note.bass", 1.0f, 1.0f);
 						
 					}
-				}, delay, TimeUnit.MILLISECONDS);
-    			
-    		}
-    		
-    	}
-    	
-    	bedwarsFriendRequester(message);
-    	
-    }
-    
-    public final void bedwarsFriendRequester(String message) {
-    	
-    	if (message.contains("Red -") || message.contains("Blue -") || message.contains("Green -") || message.contains("Yellow -")) {
-    		
-    		// Get names
-    		final String[] split = message.split(",");
-    		final List<String> names = new ArrayList<String>();
-    		
-    		for (int i = 0; i < split.length; i++) {
-    			
-    			String name = split[i];
-    			
-    			if (i == 0) {
-    				name = split[i].split("-")[1]; // removes leading chars
-    			}
-    			
-    			if (name.contains("]")) {
-					name = name.split("]")[1]; // removes ranks
-				}
-    			
-    			name = name.replaceAll("\\s", ""); // removes whitespace
-    			
-    			if (name.equals(Minecraft.getMinecraft().thePlayer.getName())) {
-					continue;
-				}
-    			
-    			names.add(name);
-    			
-    		}
-    		
-    		// Send requests
-    		for (int i = 0; i < names.size(); i++) {
-    			
-    			final String name = names.get(i);
-    			
-    			final ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-        		scheduledExecutorService.schedule(new Runnable() {
-					@Override
-					public void run() {
-						
-						if (!enabled) {
-							return;
-						}
-						
-						Minecraft.getMinecraft().thePlayer.sendChatMessage("/f add " + name);
-						Minecraft.getMinecraft().thePlayer.playSound("note.bass", 1.0f, 1.0f);
-						
-					}
-				}, 17000 + (new Random().nextInt(2000-1500+1)+1500 * i), TimeUnit.MILLISECONDS);
+				}, keyword.getRandomDelay(), TimeUnit.MILLISECONDS);
     			
     		}
     		

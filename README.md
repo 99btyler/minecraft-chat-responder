@@ -1,5 +1,5 @@
 # minecraft-chat-responder
-Automatically respond to keywords in the chat
+![minecraft-chat-responder gif](https://i.imgur.com/CDlFnd2.jpeg)
 
 # Getting Started
 Get this project set up locally

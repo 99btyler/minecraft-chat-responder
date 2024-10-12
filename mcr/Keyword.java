@@ -12,7 +12,7 @@ public class Keyword {
 	
 	public Keyword(String text, String responses, String delay) {
 		this.text = text;
-		this.responses = responses;
+		setResponses(responses); // check if valid
 		this.delay = delay;
 	}
 	
@@ -38,7 +38,17 @@ public class Keyword {
 	}
 	
 	public final void setResponses(String responses) {
-		this.responses = responses;
+		
+		if (responses.contains(text)) {
+			
+			this.responses = responses.replace(text, "...");
+			
+		} else {
+			
+			this.responses = responses;
+			
+		}
+		
 	}
 	
 	public final String getDelay() {

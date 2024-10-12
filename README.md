@@ -5,7 +5,7 @@ Automatically respond to keywords in the chat
 Get this project set up locally
 ### Prerequisites
 * Download the decompiled mcp919 for 1.8.9 [here](https://github.com/Marcelektro/MCP-919)
-* Create a natives folder in mcp919>jars>libraries>org>lwjgl -- download the natives [here](https://legacy.lwjgl.org)
+* Create a natives folder in mcp919>jars>libraries>org>lwjgl (download the natives [here](https://legacy.lwjgl.org) and copy/paste the files unique to your operating system into the natives file)
 * (In Eclipse) Open the eclipse folder and set client>properties>java-build-path>libraries>lwjgl>native-library-location to [path to natives folder]
 ### Setting up
 * Copy the mcr folder from this repository to mcp919/src/minecraft
